@@ -1,0 +1,187 @@
+{% extends 'dashboard/app/base.html' %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<script>
+  Swal.fire({
+    text: "{{ message }}",
+    icon: "{{ 'error' if category == 'error' else 'success' if category == 'success' else 'warning' }}",
+    title: "Informasi!",
+    showConfirmButton: false,
+    timer: 3000
+  });
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <div class="row">
+            <div class="col-6 d-flex align-items-center">
+              <h5 class="mb-0" style="font-weight: 900;">Speech to Text</h6>
+            </div>
+            <div class="col-6 text-end">
+              <button class="btn btn-outline-primary btn-sm mb-0" data-bs-toggle="modal"
+                data-bs-target="#Modal{{data.speech_id}}"><i class="fas fa-pencil-alt text-dark me-2"
+                  aria-hidden="true"></i>Edit</button>
+            </div>
+          </div>
+
+        </div>
+        <div class="card-body p-4" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+          <div class="row">
+            <div class="col-md-6">
+              <p class="text-bold">Nama Institusi</p>
+              <p>{{data.institusi}}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-bold">IP Camera</p>
+              <p>{{data.ip_camera}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <p class="text-bold">Jenis Kamera</p>
+              <p>{{data.type_camera}}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-bold">Bahasa</p>
+              {% if data.bahasa == 'id' %}
+              <p>Bahasa Indonesia (INA)</p>
+              {% else %}
+              <p>Bahasa Inggris (ENG)</p>
+              {% endif %}
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#StartSpeech">
+            Mulai Sekarang
+          </button>
+
+          <!-- Modal -->
+          <div class="modal fade" id="Modal{{data.speech_id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Detail Speech</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form action="/edit-speech/{{data.speech_id}}" method="post">
+                    <div class="mb-3">
+                      <label for="exampleFormControlInput1" class="form-label">Tipe Kamera</label>
+                      <select class="form-select" name="type_camera" id="cameraSelect"
+                        aria-label="Default select example" required onchange="showHideIPCameraForm()">
+                        <option selected value="">--- Jenis Kamera ---</option>
+                        <option value="Internal Camera">Internal</option>
+                        <option value="External Camera">Eksternal</option>
+                      </select>
+                    </div>
+                    <div class="mb-3" id="ipCameraForm" style="display: none;">
+                      <label for="exampleFormControlInput1" class="form-label">IP Camera</label>
+                      <input type="text" class="form-control" name="ip_camera" placeholder="Masukan IP Camera">
+                    </div>
+                    <div class="mb-3">
+                      <label for="exampleFormControlInput1" class="form-label">Bahasa</label>
+                      <select class="form-select" name="bahasa" aria-label="Default select example" required>
+                        <option selected value="">--- Jenis Bahasa ---</option>
+                        <option value="id">Indonesia (IDN)</option>
+                        <option value="en-US">Inggris (ENG)</option>
+                      </select>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="StartSpeech" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <div class="content" style="padding: 3%;">
+                    <img src="{{ url_for('static', filename='img/tutorial/img-1.png') }}" alt="" width="100%"
+                      height="400px">
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Modal2">
+                    Lanjut
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="Modal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <div class="content" style="padding: 3%;">
+                    <p style="font-size: 15px; font-weight: 600; margin-top: 2%;">Berikut adalah langkah-langkah untuk menggunakan
+                      fitur Speech to Text :</p>
+                    <ol style="font-size: 14px; margin-top: 2%;">
+                      <li> Klik "Mulai Speech".</li>
+                      <li> Tekan tombol "Start" untuk mengaktifkan microfon dan memulai proses pengenalan suara.</li>
+                      <li> Ucapkan kata-kata atau kalimat yang ingin Anda terjemahkan ke dalam
+                        bahasa isyarat.</li>
+                      <li> Aplikasi akan secara otomatis menerjemahkan ucapan Anda ke dalam bahasa
+                        isyarat.</li>
+                      <li>Gunakan Live Gesture untuk membuat siswa lebih memahami ucapan anda lewat gesture gerak bibir dan tangan</li>
+                    </ol>
+                    {% if data.accept == 1%}
+                    <div class="modal-footer">
+                      <a href="/speech-live/{{data.speech_id}}" type="button" class="btn btn-primary">
+                        Mulai Speech
+                      </a>
+                    </div>
+                    {% else %}
+                    <form action="/accept-speech/{{data.speech_id}}" method="post">
+                      <div class="mb-3 form-check">
+                        <input type="checkbox" name="accept" class="form-check-input" value="1" required>
+                        <label class="form-check-label" for="exampleCheck1">Apakah kamu sudah mengerti dengan
+                          persyaratan tersebut</label>
+                      </div>
+                      <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#StartSpeech">
+                        Kembali
+                      </button>
+                      <button type="submit" class="btn btn-primary">Mulai Speech</button>
+                    </form>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    function showHideIPCameraForm() {
+      var cameraSelect = document.getElementById("cameraSelect");
+      var ipCameraForm = document.getElementById("ipCameraForm");
+
+      if (cameraSelect.value === "External Camera") {
+        ipCameraForm.style.display = "block";
+      } else {
+        ipCameraForm.style.display = "none";
+      }
+    }
+  </script>
+  {% endblock %}

@@ -1,0 +1,166 @@
+{% extends 'dashboard/app/base.html' %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <div class="row">
+            <div class="col-6 d-flex align-items-center">
+              <h5 class="mb-0">Detail Sign Detection</h6>
+            </div>
+            <div class="col-6 text-end">
+              <button class="btn btn-outline-primary btn-sm mb-0" data-bs-toggle="modal" data-bs-target="#Modal{{data.sign_id}}"><i
+                  class="fas fa-pencil-alt text-dark me-2" aria-hidden="true"></i>Edit</button>
+            </div>
+          </div>
+
+        </div>
+        <div class="card-body p-4">
+          <div class="row">
+            <div class="col-md-6">
+              <p class="text-bold">Nama Institusi</p>
+              <p>{{data.institusi}}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-bold">IP Camera</p>
+              <p>{{data.ip_camera}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <p class="text-bold">Jenis Kamera</p>
+              <p>{{data.type_camera}}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-bold">Voice</p>
+              {% if data.voice == 0 %}
+              <p>Laki-laki</p>
+              {% else %}
+              <p>Perempuan</p>
+              {% endif %}
+            </div>
+          </div>
+        
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalStart">
+            Mulai Deteksi
+          </button>
+
+          <!-- Modal -->
+          <div class="modal fade" id="Modal{{data.sign_id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Sign</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form action="/edit-sign/{{data.sign_id}}" method="post">
+                    <div class="mb-3">
+                      <label for="exampleFormControlInput1" class="form-label">Jenis Kamera</label>
+                      <select name="type_camera" class="form-select" id="cameraSelect" aria-label="Default select example" required
+                        onchange="showHideIPCameraForm()">
+                        <option selected disabled value="">--- Jenis Kamera ---</option>
+                        <option value="Internal Camera">Internal</option>
+                        <option value="External Camera">Eksternal</option>
+                      </select>
+                    </div>
+                    <div class="mb-3" id="ipCameraForm" style="display: none;">
+                      <label for="exampleFormControlInput1" class="form-label">IP Camera</label>
+                      <input type="text" name="ip_camera" class="form-control" placeholder="Masukan IP Camera">
+                    </div>
+                    <div class="mb-3">
+                      <label for="exampleFormControlInput1" class="form-label">Voice</label>
+                      <select name="voice" class="form-select" aria-label="Default select example" required>
+                        <option selected disabled value="">--- Pilih Voice ---</option>
+                        <option value="0">Laki-laki</option>
+                        <option value="1">Perempuan</option>
+                      </select>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                  </form>
+                </div>  
+              </div> 
+            </div>
+          </div>
+
+          <div class="modal fade" id="ModalStart" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <div class="content" style="padding: 3%;">
+                    <img
+                      src="https://3.bp.blogspot.com/-fsX-VVAgFQE/V6xOhLuwddI/AAAAAAAAAOc/IPCT7faM3aswtiKsA41_kRiaOldwDl7pACLcB/s1600/FB_IMG_14682124560465842.jpg"
+                      alt="" width="100%">
+                    <p style="font-size: 12px; font-weight: 600; margin-top: 2%;">Selamat datang di tutorial penggunaan.
+                      Berikut adalah langkah-langkah untuk menggunakan aplikasi</p>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Modal2">
+                    Lanjut
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="Modal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <div class="content" style="padding: 3%;">
+                    <img
+                      src="https://3.bp.blogspot.com/-fsX-VVAgFQE/V6xOhLuwddI/AAAAAAAAAOc/IPCT7faM3aswtiKsA41_kRiaOldwDl7pACLcB/s1600/FB_IMG_14682124560465842.jpg"
+                      alt="" width="100%">
+                    <p style="font-size: 12px; font-weight: 600; margin-top: 2%;">Selamat datang di tutorial penggunaan.
+                      Berikut adalah langkah-langkah untuk menggunakan aplikasi</p>
+                    {% if data.accept == 1%}
+                    <div class="modal-footer">
+                      <a href="/sign-detection-live/{{data.sign_id}}" type="button" class="btn btn-primary">
+                        Mulai Detection
+                      </a>
+                    </div>
+                    {% else %}
+                    <form action="/accept-sign/{{data.sign_id}}"  method="post">
+                      <div class="mb-3 form-check">
+                        <input type="checkbox" name="accept" class="form-check-input" value="1" required>
+                        <label class="form-check-label" for="exampleCheck1">Apakah kamu sudah mengerti dengan
+                          persyaratan tersebut</label>
+                      </div>
+                      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalStart">
+                        Kembali
+                      </button>
+                      <button type="submit" class="btn btn-primary">Mulai Speech</button>
+                    </form>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showHideIPCameraForm() {
+      var cameraSelect = document.getElementById("cameraSelect");
+      var ipCameraForm = document.getElementById("ipCameraForm");
+
+      if (cameraSelect.value === "External Camera") {
+        ipCameraForm.style.display = "block";
+      } else {
+        ipCameraForm.style.display = "none";
+      }
+    }
+  </script>
+
+  {% endblock %}

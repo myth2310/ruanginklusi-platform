@@ -1,0 +1,171 @@
+{% extends 'dashboard/app/base-speech.html' %}
+
+{% block content %}
+<style>
+    #vidioList {
+        display: none;
+    }
+
+    #noVideoMessage {
+        display: none;
+    }
+
+
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body px-0 pt-0" style="height: 400px;">
+                    <div id="videoContainer"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="tab-content" id="myTabContent">
+                <div class="card mb-4">
+                    <div class="card-header pb-0">
+                        <div class="row">
+                            <div class="col-9 d-flex align-items-center">
+                                <p class="mb-0" id="speechStatus" style="font-size: 15px;">Klik <span style="font-weight: 800;">"Transcribe"</span> untuk mulai mongkonversi text ke bahasa isyarat</p>
+                            </div>
+                            <div class="col-3 text-end">
+                                <button id="acceptButton" class="btn btn-secondary">Keluar</button>
+                            </div>
+                            <hr class="horizontal dark mt-0">
+                        </div>
+                    </div>
+                    <div class="card-body px-4 pt-0" style="height: 350px; overflow: auto; ">
+                       
+                        <form id="videoForm">
+                            <div class="mb-3">
+                                <textarea class="form-control" style="height: 200px;" id="textInput"  name="textInput" rows="3" placeholder="Ketikan Sesuatu..." required></textarea>
+                                <span class="badge text-bg-success text-white mt-2" id="resultText"></span>
+                            </div>
+                            <button type="button" class="btn btn-danger" onclick="searchVideo()">Transcribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function showSweetAlert() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Akan keluar dari ruang speech ini!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/dashboard';
+            }
+        });
+    }
+    document.getElementById('acceptButton').addEventListener('click', function () {
+        showSweetAlert();
+    });
+</script>
+
+    <script>
+        let currentVideoIndex = 0;
+        let videoListData = [];
+    
+        function searchVideo() {
+            const inputText = document.getElementById('textInput').value;
+            const videoContainer = document.getElementById('videoContainer');
+            videoContainer.innerHTML = '';
+    
+            fetch('/process_input', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 'input_text': inputText }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('resultText').innerText = data.result;
+    
+                if (data.videoList.length > 0) {
+                    currentVideoIndex = 0;
+                    videoListData = data.videoList;
+    
+                    playNextVideo();
+                    document.getElementById('vidioList').style.display = 'block';
+                    document.getElementById('noVideoMessage').style.display = 'none';
+                } else {
+                    document.getElementById('vidioList').style.display = 'none';
+                    document.getElementById('noVideoMessage').style.display = 'block';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    
+        function playNextVideo() {
+            const videoContainer = document.getElementById('videoContainer');
+    
+            if (currentVideoIndex < videoListData.length) {
+                const video = document.createElement('video');
+                video.setAttribute('width', '100%');
+                video.setAttribute('height', '400px');
+                video.setAttribute('controls', 'controls');
+                video.setAttribute('autoplay', 'autoplay');
+    
+                const source = document.createElement('source');
+                const videoName = videoListData[currentVideoIndex].video_name;
+    
+                // Check if video name is available
+                if (videoName) {
+                    source.setAttribute('src', `/static/video/${videoName}.mp4`);
+                    source.setAttribute('type', 'video/mp4');
+    
+                    video.appendChild(source);
+                    videoContainer.innerHTML = '';
+                    videoContainer.appendChild(video);
+    
+                    currentVideoIndex++;
+    
+                    video.addEventListener('ended', function () {
+                        if (currentVideoIndex < videoListData.length) {
+                            playNextVideo();
+                        } else {
+                            video.pause();
+                            video.currentTime = 0;
+                            videoContainer.innerHTML = '';
+                            
+                            // Update message after last video
+                            document.getElementById('vidioList').style.display = 'none';
+                            document.getElementById('noVideoMessage').style.display = 'block';
+                        }
+                    });
+    
+                    video.play();
+                } else {
+                    // Display message if video name is not available
+                    document.getElementById('vidioList').style.display = 'none';
+                    document.getElementById('noVideoMessage').style.display = 'block';
+                }
+            }
+        }
+    
+        function clearData() {
+            document.getElementById('resultText').innerText = '';
+            document.getElementById('videoContainer').innerHTML = '';
+            document.getElementById('vidioList').style.display = 'none';
+            document.getElementById('noVideoMessage').style.display = 'none';
+        }
+    </script>
+    
+</body>
+</html>
+
+
+{% endblock %}

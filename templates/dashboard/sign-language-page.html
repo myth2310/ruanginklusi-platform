@@ -1,0 +1,102 @@
+{% extends 'dashboard/app/base.html' %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <div class="row">
+                        <div class="col-6 d-flex align-items-center">
+                            <h5 class="mb-0" style="font-weight: 800;">Sign Language (Bahasa Isyarat)</h6>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-body p-4" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                    <div class="row">
+                        <div class="col-md mb-3">
+                            <p style="text-align: justify;"><span style="font-weight: 700;">RuangInklusi</span>
+                                memilki fitur mengkonversi text dan speech(ucapan) menjadi bahasa isyarat dalam bentuk
+                                vidio secara otomatis. Sistem ini dapat mengartikan kata-kata yang diucapkan atau ketikan oleh pengguna ke
+                                dalam bahasa isyarat yang sesuai. Ini memberikan aksesibilitas tambahan bagi komunitas
+                                tuna rungu atau pengguna bahasa isyarat, memungkinkan mereka untuk berkomunikasi dengan
+                                lebih mudah dan efisien.
+                            </p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Speech1">
+                        Speech to Sign Language
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#Text1">
+                        Text to Sign Language
+                    </button>
+
+                    <div class="modal fade" id="Speech1" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <div class="content" style="padding: 3%;">
+                                        <p style="font-size: 15px; font-weight: 600; margin-top: 2%;">Berikut adalah langkah-langkah untuk menggunakan
+                                            fitur Speech to Sign Language : </p>
+                                        <ol style="font-size: 14px; margin-top: 2%;">
+                                            <li> Klik tombol <span class="font-weight-bold">"Mulai Speech"</span></li>
+                                            <li> Sistem akan diarahkan ke halaman Speech to Sign Language Live</li>
+                                            <li> Tekan tombol "Mulai" untuk memulai proses pengenalan suara.</li>
+                                            <li> Ucapkan kata-kata atau kalimat yang ingin Anda terjemahkan ke dalam
+                                                bahasa isyarat.</li>
+                                            <li> Sistem akan secara otomatis menerjemahkan ucapan Anda ke dalam bahasa
+                                                isyarat dalam bentuk vidio</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#ModalStart">
+                                        Kembali
+                                    </button>
+                                    <a href="{{url_for('liveSpeechSignLanguage')}}" class="btn btn-primary">Mulai
+                                        Speech</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="Text1" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <div class="content" style="padding: 3%;">
+                                        <p style="font-size: 15px; font-weight: 600; margin-top: 2%;">Berikut adalah langkah-langkah untuk menggunakan
+                                            fitur Text to Sign Language : </p>
+                                        <ol style="font-size: 14px; margin-top: 2%;">
+                                            <li> Klik tombol <span class="font-weight-bold">"Mulai Text"</span></li>
+                                            <li> Sistem akan diarahkan ke halaman Text to Sign Language Live</li>
+                                            <li> Ketikan text yang ingin ditranscribe dalam form input</li>
+                                            <li>  Klik tombol <span class="font-weight-bold">"Transcribe"</span> untuk melakukan trancribe bahasa isyarat</li>
+                                            <li> Sistem akan secara otomatis menerjemahkan text yang anda inputkan ke dalam bahasa
+                                                isyarat dalam bentuk vidio</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#ModalStart">
+                                        Kembali
+                                    </button>
+                                    <a href="{{url_for('liveTextSignLanguage')}}" class="btn btn-primary">Mulai Text</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}

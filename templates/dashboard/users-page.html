@@ -1,0 +1,66 @@
+{% extends 'dashboard/app/base.html' %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+    <div class="row">
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            <h6>Daftar Users</h6>
+          </div>
+          <div class="card-body px-0 pt-0 pb-2">
+            <div class="table-responsive p-4">
+              <table id="example" class="table align-items-center mb-0" style="width:100%">
+                <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Level</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                      <th class="text-secondary opacity-7"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                  {% for data in data %}
+                  <tr>
+                    <td>
+                      <div class="d-flex px-2 py-1">
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-sm">{{data.username}}</h6>
+                          <p class="text-xs text-secondary mb-0">{{data.email}}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <p class="text-xs font-weight-bold mb-0">{{data.level}}</p>
+                      <p class="text-xs text-secondary mb-0">{{data.institusi}}</p>
+                    </td>
+                    <td class="align-middle text-center text-sm">
+                      {% if data.online_status == 1 %}
+                      <span class="badge badge-sm bg-gradient-success">{{ "Online" if data['online_status'] else "Offline" }}</span>
+                      {% else %}
+                      <p class="text-xs text-secondary mb-0">{{ data.last_login_diff}}</p>
+                      {% endif %}
+                    </td>
+                    
+                    <td class="align-middle">
+                      <a href="#" class="btn btn-outline-danger btn-sm">
+                        Hapus
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                   
+                </tbody>
+              </table>
+
+        
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+
+{% endblock %}

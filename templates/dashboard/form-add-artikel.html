@@ -1,0 +1,59 @@
+{% extends 'dashboard/app/base.html' %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-body px-0 pt-2 pb-4">
+          <div class="row p-4 pt-1">
+            <form action="{{url_for('insertArtikel')}}" method="post" enctype="multipart/form-data">
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <label for="example-text-input" class="form-control-label">Judul Artikel</label>
+                    <input class="form-control" type="text" name="title" placeholder="Judul Artikel" required>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <label for="example-text-input" class="form-control-label">Image</label>
+                    <input class="form-control" type="file" name="image" accept="image/jpeg, image/jpg, image/png"  required>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <label for="example-text-input" class="form-control-label">Kategori Artikel</label>
+                    <select class="form-select" name="kategori" required>
+                      <option selected disabled value="">Choose...</option>
+                      <option value="Pendidikan">Pendidikan</option>
+                      <option value="Edukasi">Edukasi</option>
+                      <option value="News">News</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="form-group">
+                    <label for="example-text-input" class="form-control-label">Artikel</label>
+                    <input id="description" type="hidden" name="description" required>
+                    <trix-editor input="description"></trix-editor>
+                  </div>
+                </div>
+              </div>
+              <hr class="horizontal dark">
+              <button type="submit" class="btn btn-primary">Simpan</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endblock %}

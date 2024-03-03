@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Streaming</title>
+</head>
+<body>
+    <div id="transcription"></div>
+
+    <script>
+        const transcriptionDiv = document.getElementById('transcription');
+      
+        const eventSource = new EventSource('/stream');
+      
+        eventSource.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+      
+          // Assuming data is an array of transcriptions
+          const transcriptions = data.map(text => `<p>${text}</p>`).join('');
+      
+          transcriptionDiv.innerHTML = transcriptions;
+        };
+    </script>
+</body>
+</html>

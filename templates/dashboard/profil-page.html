@@ -1,0 +1,174 @@
+{% extends 'dashboard/app/base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row pb-2">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row gx-4">
+                    <div class="col-auto">
+                        <div class="avatar avatar-xl position-relative">
+                            {% if data.image == none %}
+                            <img src="{{ url_for('static', filename='img/icon-profil.png') }}" alt="profile_image"
+                            class="w-100 border-radius-lg shadow-sm" style="height: 70px; object-fit: cover;">
+                            {% else %}
+                            <img src="{{url_for('static', filename='images/profil/' + data.image) }}"
+                            alt="profile_image" class="w-100 border-radius-lg shadow-sm"
+                            style="height: 70px; object-fit: cover;">
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-auto my-auto">
+                        <div class="h-100">
+                            <h5 class="mb-1">
+                                {{data.username}}
+                            </h5>
+                            <p class="mb-0 font-weight-bold text-sm">
+                                Pelopor Kemajuan
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
+                        <div class="nav-wrapper position-relative end-0">
+                            <ul class="nav  nav-fill p-1" role="tablist">
+                                <li class="nav-item">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#Modal{{data.user_id}}">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                        <span class="ms-2">Edit Profil</span>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <p class="text-uppercase text-sm">User Information</p>
+                <div class="row" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="example-text-input" class="form-control-label">Institusi</label>
+                            <p>{{data.institusi}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="example-text-input" class="form-control-label">Email</label>
+                            <p>{{data.email}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="example-text-input" class="form-control-label">No HP</label>
+                            {% if data.no_hp == null %}
+                            <p>{{data.no_hp}}</p>
+                            {% else %}
+                            <p>-</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="example-text-input" class="form-control-label">Alamat</label>
+                            {% if data.alamat == null %}
+                            <p>{{data.alamat}}</p>
+                            {% else %}
+                            <p>-</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="Modal{{data.user_id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Profil</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/edit-profil/{{data.user_id}}" method="post" enctype="multipart/form-data">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="exampleFormControlInput1" class="form-label">Image</label>
+                            <input name="image" type="file" accept="image/jpeg, image/jpg, image/png"
+                                class="form-control" id="fileInput" onchange="previewImage()" required>
+                        </div>
+                        <div class="col">
+                            <div id="imagePreview"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Nama Lengkap</label>
+                        <input type="text" name="username" class="form-control" value="{{data.username}}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Email</label>
+                        <input type="email" class="form-control" value="{{data.email}}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Institusi</label>
+                        <input type="text" name="institusi" class="form-control" value="{{data.institusi}}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">No HP</label>
+                        {% if data.no_hp == none %}
+                        <input type="text" name="no_hp" class="form-control" placeholder="No HP" required>
+                        {% else %}
+                        <input type="text" value="{{data.no_hp}}" name="no_hp" class="form-control" placeholder="No HP"
+                            required>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Alamat</label>
+                        {% if data.no_hp == none %}
+                        <textarea name="alamat" class="form-control" id="exampleFormControlTextarea1" rows="3"
+                        placeholder="Alamat Lengkap" required></textarea>
+                        {% else %}
+                        <textarea name="alamat" class="form-control" id="exampleFormControlTextarea1" rows="3"
+                        placeholder="Alamat Lengkap" required>{{data.alamat}}</textarea>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Edit</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function previewImage() {
+        var fileInput = document.getElementById('fileInput');
+        var imagePreview = document.getElementById('imagePreview');
+
+        if (fileInput.files && fileInput.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                imagePreview.innerHTML = '<img src="' + e.target.result + '" class="img-fluid rounded-circle" style="width: 100%; height: 200px; object-fit: cover;" alt="Preview">';
+            };
+
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    }
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends 'landing-page/app/base.html' %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<script>
+  Swal.fire({
+    text: "{{ message }}",
+    icon: "{{ 'error' if category == 'error' else 'success' }}",
+    title: "Informasi!",
+    showConfirmButton: false,
+    timer: 1500
+  });
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="hero-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div style="padding-top: 20%;">
+          <h3 style="font-weight: bold; color: #000000!important;;">Inovasi <span style="color: #596CFF;">Pembelajaran
+              Inklusif </span>untuk <span style="text-decoration: underline #596CFF;">Siswa Tunarungu dan
+              Tunawicara.</span></h3>
+          <p class="lead text-muted" style="text-align: justify; letter-spacing: 1px; font-size: 15px;">
+            Kami hadir dengan teknologi terkini, proses pembelajaran mudah, akses penuh ke pengetahuan. Langkah
+            belajar jadi inklusif, pengalaman luar biasa bersama kami
+          </p>
+          <a href="{{url_for('signIn')}}" class="btn btn-lg mt-3"
+            style="background-color: #596CFF!important; color: white;"><i
+              class="fa-solid fa-microphone-lines"></i>&nbsp; Start
+            Learning</a>
+        </div>
+      </div>
+      <div class="col-md-6 hero-section-image d-none d-md-block">
+        <img src="{{ url_for('static', filename='img/hero-icon.png') }}" alt="Icon" width="100%">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="hero-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 hero-section-image d-none d-md-block">
+        <img src="{{ url_for('static', filename='img/splash-icon.jpg') }}" alt="Icon" style="width: 100%; height: 500px;">
+      </div>
+      <div class="col-md-6">
+        <div style="padding-top: 20%;">
+          <h3 style="font-weight: bold; color: #000000!important;;"><span style="color: #596CFF;">Solusi Alternatif Dalam Metode Pembelajaran Inklusi</span></h3>
+          <p class="lead text-muted" style="text-align: justify; letter-spacing: 1px; font-size: 13px;">
+            <span style="font-weight: 800;">RuangInklusi</span> merupakan platfrom yang memfasilitasi pengajar untuk menjebatani komunikasi kepada siswa tunarungu dan wicara untuk memahami materi pembelajaran, dan mendorong partisipasi aktif. Didukung dengan teknologi terbaru yaitu 
+            <span style="font-weight: 600;">Speech to Text , Speech to Sign Language dan Text to Sign Language</span> menciptakan lingkungan pendidikan yang inklusif. Dengan mengatasi hambatan komunikasi, peserta didik merasa lebih termotivasi, percaya diri, dan aksesibilitas informasi yang lebih luas.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="feature-section" id="features">
+  <div class="container">
+    <h1 class="text-center" style="font-weight: bold; color: #000000!important;;"><span
+        style="font-weight: bold; color: #596CFF!important;">Our</span> Features</h1>
+    <hr style="border: 1px solid #596CFF; width: 35%; margin-bottom: 5%;">
+    <div class="row">
+      <div class="col-md-4 feature mb-3">
+        <img src="{{ url_for('static', filename='img/speech-to-text.png') }}" alt="" class="img-fluid mb-3" width="20%">
+        <h3 style="font-weight: bold; color: #596CFF!important;">Speech to Text</h3>
+        <p style="text-align: justify; font-size: 11px; letter-spacing: 1px;text-indent: 25px; ">Fitur ini memungkinkan
+          siswa tunarungu untuk mengakses konten verbal secara langsung melalui konversi ucapan menjadi teks secara
+          real-time. Dengan bantuan teknologi pengenal suara tingkat tinggi, setiap kata yang diucapkan akan secara
+          otomatis dikonversi menjadi teks yang dapat dibaca oleh siswa tunarungu.
+        </p>
+      </div>
+      <div class="col-md-4 feature mb-3">
+        <img src="{{ url_for('static', filename='img/live.png') }}" alt="" class="img-fluid mb-3" width="20%">
+        <h3 style="font-weight: bold; color: #596CFF!important;">Gesture Live</h3>
+        <p style="text-align: justify; font-size: 11px; letter-spacing: 1px;text-indent: 25px;">Fitur ini memungkinkan pengajar untuk secara visual terlihat saat melakukan presentasi, sambil menggunakan gerakan mulut atau tangan untuk menjelaskan konsep lebih dekat kepada siswa. Dengan demikian, siswa tunarungu dan wicara dapat lebih jelas melihat maksud dan tujuan p </p>
+      </div>
+      <div class="col-md-4 feature mb-3">
+        <img src="{{ url_for('static', filename='img/pdf-download.png') }}" alt="" class="img-fluid mb-3" width="20%">
+        <h4 style="font-weight: bold; color: #596CFF!important;">Sign Language</h4>
+        <p style="text-align: justify; font-size: 11px; letter-spacing: 1px; text-indent: 25px; ">Sistem ini dilengkapi
+          dengan teknologi Speech to Sign Language dan Text to Sign Language yang memungkinkan untuk berkomunikasi menggunakan bahasa isyarat. Dimana dengan fitur ini akan menerjemahkan ucapan dan text kedalam bahasa isyarat berbentuk vidio seraca realtime.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="articles-section" id="articles">
+  <div class="container">
+    <h1 class="text-center" style="font-weight: bold; color: #000000!important;;"><span
+        style="font-weight: bold; color: #596CFF!important;">Latest</span> Articles</h1>
+    <hr style="border: 1px solid #596CFF; width: 35%; margin-bottom: 5%;">
+    <div class="row">
+      {% for data in data %}
+      <div class="col-lg-4 col-md-6 mb-4">
+        <a href="/{{data.slug}}" style="text-decoration: none;">
+          <div class="card" style="border: none;">
+            <img src="{{ url_for('static', filename='images/artikel/' + data.image) }}" class="card-img-top"
+              alt="Article 3" width="100%" height="300px" style="object-fit: cover;">
+            <div class="card-body" style="padding: 10px 0 0 0;">
+              <h5 class="card-title" style="color: #242424; font-weight: 650;">{{data.title}}</h5>
+              <article style="text-align: justify; font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; color: #7c7b7b; letter-spacing: -1px;">
+                {{data.summary|safe}}
+              </article>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    <hr class="my-5">
+  </div>
+</div>
+
+{% endblock %}

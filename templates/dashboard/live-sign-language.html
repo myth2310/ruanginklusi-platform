@@ -1,0 +1,314 @@
+{% extends 'dashboard/app/base-speech.html' %}
+
+{% block content %}
+<style>
+    #vidioList {
+        display: none;
+    }
+
+    #noVideoMessage {
+        display: none;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body px-0 pt-0" style="height: 400px;">
+                    <div id="videoContainer">
+                        <video id="vidioList" width="100%" height="400px" autoplay controls onended="playNextVideo()">
+                            Your browser does not support the video tag.
+                        </video>
+                        <div id="loading" style="display: none;">Loading...</div>
+                        <div id="noVideoMessage" class="text-center" style="margin-top: 25%;">
+                            <img src="{{ url_for('static', filename='img/icons8-stremio.gif') }}">
+                            <p style="font-weight: 600; font-size: 12px;">Data speech belum ada. Ucapan kalimat lain</p>
+                        </div>
+                        <div id="vidio-play" class="text-center" style="margin-top: 28%;">
+                            <img src="{{ url_for('static', filename='img/icons8-oculus.gif') }}">
+                            <p style="font-weight: 600; font-size: 12px;">Belum ada video yang dijalankan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <div class="row">
+                        <div class="col-9 d-flex align-items-center">
+                            <p class="mb-0" id="speechStatus">Klik pada icon "Start" untuk mulai berbicara</p>
+                        </div>
+                        <div class="col-3 text-end">
+                            <button id="toggleButton" onclick="toggleRecognition()"
+                                class="btn btn-primary">Start</button>
+                        </div>
+                        <hr class="horizontal dark mt-0">
+                    </div>
+                </div>
+
+                <div class="card-body px-4 pt-0" style="height: 350px; overflow: auto; ">
+                    <p style=" font-size: 25px; font-weight: 900;" id="result">
+
+                    </p>
+                </div>
+            </div>
+
+            <a id="acceptButton" class="btn btn-lg btn-primary">Keluar</a>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    if (!("webkitSpeechRecognition" in window)) {
+        alert("Speech Recognition Not Available");
+    }
+
+    let SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+    let SpeechGrammarList =
+        window.SpeechGrammarList || window.webkitSpeechGrammarList;
+    let SpeechRecognitionEvent =
+        window.SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent;
+
+    let recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.lang = "id";
+    recognition.interimResults = true;
+
+    let lastProcessedText = ''; // Menyimpan teks terakhir yang diproses
+    let lastCategory = ''; // Menyimpan kategori terakhir
+    let lastVideoName = ''; // Menyimpan nama video terakhir
+
+
+    recognition.onstart = () => {
+    document.querySelector("#speechStatus").textContent = "Mulai Bicara sekarang!";
+  };
+
+  recognition.onstop = () => {
+    document.querySelector("#speechStatus").textContent = "Klik pada icon 'Start' untuk mulai berbicara";
+  };
+
+    recognition.onstart = () => {
+        document.querySelector("#speechStatus").textContent = "Mulai Bicara sekarang!";
+        const startButton = document.querySelector("#toggleButton");
+        startButton.textContent = "Stop";
+        startButton.classList.remove("btn-primary");
+        startButton.classList.add("btn-danger");
+    };
+
+    recognition.onstop = () => {
+        document.querySelector("#speechStatus").textContent = "Klik pada icon 'Start' untuk mulai berbicara";
+        const startButton = document.querySelector("#toggleButton");
+        startButton.textContent = "Start";
+        startButton.classList.remove("btn-danger");
+        startButton.classList.add("btn-primary");
+    };
+
+    // Cek apakah speech sedang aktif berdasarkan localStorage
+    let isSpeechActive = localStorage.getItem('isSpeechActive') === 'true';
+    if (isSpeechActive) {
+        recognition.start();
+    }
+
+    recognition.onend = function () {
+        console.log('Speech recognition ended.');
+        // Tunggu 2 detik sebelum memproses data
+        setTimeout(() => {
+            // Pemrosesan data dilakukan setelah pengguna selesai berbicara
+            sendDataToFlask(lastProcessedText);
+        }, 2000);
+    };
+
+    recognition.onerror = function (event) {
+        console.error('Speech recognition error:', event.error);
+        // Tunggu 2 detik sebelum memproses data
+        setTimeout(() => {
+            // Jika terjadi kesalahan, tetap lanjutkan dengan pemrosesan data
+            sendDataToFlask(lastProcessedText);
+        }, 2000);
+    };
+
+    recognition.onresult = function (event) {
+        let textResult = '';
+        for (let i = 0; i < event.results.length; i++) {
+            textResult += event.results[i][0].transcript + ' ';
+        }
+
+        // Hapus tanda baca dan spasi ekstra
+        const cleanedText = textResult.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim();
+
+        // Tambahkan spasi setelah setiap kata
+        const spacedText = cleanedText.split(' ').join(' ');
+
+        console.log(spacedText);
+        document.querySelector("#result").innerHTML = spacedText;
+
+        // Kirim data hanya jika teksnya berbeda dan bukan kalimat terakhir
+        if (spacedText !== lastProcessedText && spacedText !== lastProcessedTextBefore) {
+            lastProcessedTextBefore = lastProcessedText; // Simpan kalimat sebelumnya
+            lastProcessedText = spacedText;
+            // Hapus timer sebelumnya (jika ada) dan atur timer baru
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                sendDataToFlask(spacedText);
+            }, 2000);
+        }
+    };
+
+    let currentVideoIndex = 0;
+    let videoListData = [];
+    let timer; // Timer untuk menunggu sebelum memproses data
+    let lastProcessedTextBefore = ''; // Menyimpan kalimat sebelumnya
+
+    function sendDataToFlask(textResult) {
+        // Tampilkan elemen loading
+        document.getElementById('loading').style.display = 'block';
+
+        fetch('/process_speech', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ kata: textResult }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+
+                // Sembunyikan elemen loading
+                document.getElementById('loading').style.display = 'none';
+
+                const vidioList = document.getElementById('vidioList');
+                const noVideoMessage = document.getElementById('noVideoMessage');
+                const vidioPlayMessage = document.getElementById('vidio-play');
+                const resultElement = document.getElementById('result');
+
+                currentVideoIndex = 0;
+
+                videoListData = data.videoList;
+
+                if (data.videoList && data.videoList.length > 0) {
+
+                    // Ganti kategori dan nama video jika berbeda dengan yang terakhir kali
+                    if (videoListData.length > 0) {
+                        const newVideoName = videoListData[0].video_name;
+
+                        // Setel sumber video dan tampilkan
+                        vidioList.src = `../static/video/${newVideoName}.mp4`;
+                        vidioList.style.display = 'block';
+
+                        // Pause and play the video to apply the changes
+                        vidioList.pause();
+                        vidioList.load();
+                        vidioList.play();
+
+                        // Sembunyikan pesan "Belum ada vidio"
+                        noVideoMessage.style.display = 'none';
+                        // Sembunyikan pesan "Belum ada proses yang berjalan"
+                        vidioPlayMessage.style.display = 'none';
+                    }
+                } else {
+                    // Jika tidak ada video, sembunyikan elemen video
+                    vidioList.style.display = 'none';
+                    // Sembunyikan pesan "Belum ada vidio"
+                    noVideoMessage.style.display = 'block';
+                    // Tampilkan pesan "Belum ada proses yang berjalan"
+                    vidioPlayMessage.style.display = 'none';
+                }
+
+                // Sembunyikan elemen loading jika terjadi kesalahan
+                document.getElementById('loading').style.display = 'none';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // Sembunyikan elemen loading jika terjadi kesalahan
+                document.getElementById('loading').style.display = 'none';
+            });
+    }
+
+    function playNextVideo() {
+        const vidioList = document.getElementById('vidioList');
+
+        // Bersihkan data sebelumnya
+        lastProcessedTextBefore = '';
+        lastProcessedText = '';
+        lastCategory = '';
+        lastVideoName = '';
+
+        if (currentVideoIndex < videoListData.length - 1) {
+            currentVideoIndex++;
+        } else {
+            // Jika ini video terakhir, hentikan pemutaran
+            vidioList.pause();
+            // Bersihkan sumber video setelah pemutaran selesai
+            vidioList.src = '';
+
+            // Reload halaman setelah pemrosesan selesai
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+
+            return;
+        }
+
+        // Update sumber video dan mainkan
+        const nextVideoSource = `../static/video/${videoListData[currentVideoIndex].video_name}.mp4`;
+        vidioList.src = nextVideoSource;
+        vidioList.load();
+        vidioList.play();
+    }
+
+    function changeLanguage() {
+        const selectedLanguage = document.querySelector("#language").value;
+        recognition.lang = selectedLanguage;
+    }
+    function toggleRecognition() {
+        const startButton = document.querySelector("#toggleButton");
+        if (startButton.textContent === "Start") {
+            recognition.start();
+            localStorage.setItem('isSpeechActive', 'true');
+
+            // Update button text and color immediately
+            startButton.textContent = "Stop";
+            startButton.classList.remove("btn-primary");
+            startButton.classList.add("btn-danger");
+        } else {
+            recognition.stop();
+            document.querySelector("#speechStatus").textContent = "Klik pada icon 'Start' untuk mulai berbicara";
+            localStorage.setItem('isSpeechActive', 'false');
+
+            // Update button text and color immediately
+            startButton.textContent = "Start";
+            startButton.classList.remove("btn-danger");
+            startButton.classList.add("btn-primary");
+        }
+    }
+</script>
+
+
+<script>
+    function showSweetAlert() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Akan keluar dari ruang speech ini!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/dashboard';
+            }
+        });
+    }
+    document.getElementById('acceptButton').addEventListener('click', function () {
+        showSweetAlert();
+    });
+</script>
+
+
+{% endblock %}
