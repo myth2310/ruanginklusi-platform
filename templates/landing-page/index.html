@@ -52,15 +52,52 @@
       <div class="col-md-6">
         <div style="padding-top: 20%;">
           <h3 style="font-weight: bold; color: #000000!important;;"><span style="color: #596CFF;">Solusi Alternatif Dalam Metode Pembelajaran Inklusi</span></h3>
-          <p class="lead text-muted" style="text-align: justify; letter-spacing: 1px; font-size: 13px;">
-            <span style="font-weight: 800;">RuangInklusi</span> merupakan platfrom yang memfasilitasi pengajar untuk menjebatani komunikasi kepada siswa tunarungu dan wicara untuk memahami materi pembelajaran, dan mendorong partisipasi aktif. Didukung dengan teknologi terbaru yaitu 
-            <span style="font-weight: 600;">Speech to Text , Speech to Sign Language dan Text to Sign Language</span> menciptakan lingkungan pendidikan yang inklusif. Dengan mengatasi hambatan komunikasi, peserta didik merasa lebih termotivasi, percaya diri, dan aksesibilitas informasi yang lebih luas.
+          <p class="lead text-muted" style="text-align: justify; letter-spacing: 1px; font-size: 16px;">
+            <span style="font-weight: 800;">RuangInklusi</span> adalah platform yang memfasilitasi pengajar dalam menjembatani komunikasi dengan siswa tunarungu dan wicara. Dengan teknologi seperti             <span style="font-weight: 600;"> Speech to Text , Speech to Sign Language dan Text to Sign Language</span>, serta penggunaan BISINDO (Bahasa Isyarat Indonesia)
           </p>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<section class="section-atas py-5">
+  <div class="container p-4">
+      <h2 class="text-center">Mengapa BISINDO PENTING!</h2>
+  </div>
+</section>
+
+<!-- Tumpukan Card -->
+<section style="padding-bottom: 5%;">
+  <div class="container-fluid">
+      <div class="row">
+          <div class="col-md-8 offset-md-2">
+              <div class="card">
+                  <div class="card-body">
+                      <div class="row">
+                          <div class="col-md">
+                              <div class="container p-4">
+                                  <div class="list-writer">
+                                      <p class="font-weight-bold text-center" style="font-size: 20px; color: #3498db;">Bahasa
+                                          Isyarat Alami</p>
+                                      <p style="font-size: 15px; text-align: justify;">Bentuk komunikasi visual yang digunakan oleh komunitas tunarungu, menggunakan gerakan tangan, ekspresi wajah, dan gerakan tubuh untuk menyampaikan pesan. Bahasa ini memiliki tata bahasa dan struktur yang berbeda dari bahasa lisan</p>
+                                  </div>
+                                  <hr>
+                                  <div class="list-writer">
+                                      <p class="font-weight-bold text-center" style="font-size: 20px; color: #3498db;">BISINDO
+                                          di Setiap Daerah Berbeda</p>
+                                      <p style="font-size: 15px; text-align: justify;">BISINDO (Bahasa Isyarat Indonesia) memiliki variasi regional yang signifikan, mirip dengan dialek dalam bahasa lisan. Setiap daerah mungkin memiliki perbedaan dalam penggunaan isyarat, mencerminkan budaya dan identitas lokal dari komunitas tunarungu setempat.</p>
+                                  </div>                    
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</section>
+
 
 <div class="feature-section" id="features">
   <div class="container">
@@ -96,7 +133,7 @@
   <div class="container">
     <h1 class="text-center" style="font-weight: bold; color: #000000!important;;"><span
         style="font-weight: bold; color: #596CFF!important;">Latest</span> Articles</h1>
-    <hr style="border: 1px solid #596CFF; width: 35%; margin-bottom: 5%;">
+    <hr style="border: 1px solid #596CFF; width: 35%; margin-bottom: 10%;">
     <div class="row">
       {% for data in data %}
       <div class="col-lg-4 col-md-6 mb-4">
@@ -118,5 +155,24 @@
     <hr class="my-5">
   </div>
 </div>
+
+
+<style>
+  .section-atas {
+      background-color: #3498db;
+      color: #fff;
+  }
+
+  .container-flex {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+  }
+
+  .card {
+      margin-top: -50px;
+  }
+</style>
 
 {% endblock %}

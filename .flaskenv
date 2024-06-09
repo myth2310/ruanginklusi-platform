@@ -1,0 +1,9 @@
+FLASK_DEBUG=1
+FLASK_APP=app.py
+
+MYSQL_HOST=localhost
+MYSQL_USER=root
+MYSQL_PASSWORD=
+MYSQL_DB=ruangcerdas
+MYSQL_CURSORCLASS=DictCursor
+

@@ -61,8 +61,8 @@
             </div>
           </div>
 
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#StartSpeech">
-            Mulai Sekarang
+          <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#StartSpeech">
+            <i class="fa-solid fa-microphone-lines" style="margin-right: 10px;"></i>Mulai Sekarang
           </button>
 
           <!-- Modal -->
@@ -130,7 +130,8 @@
               <div class="modal-content">
                 <div class="modal-body">
                   <div class="content" style="padding: 3%;">
-                    <p style="font-size: 15px; font-weight: 600; margin-top: 2%;">Berikut adalah langkah-langkah untuk menggunakan
+                    <p style="font-size: 15px; font-weight: 600; margin-top: 2%;">Berikut adalah langkah-langkah untuk
+                      menggunakan
                       fitur Speech to Text :</p>
                     <ol style="font-size: 14px; margin-top: 2%;">
                       <li> Klik "Mulai Speech".</li>
@@ -139,11 +140,12 @@
                         bahasa isyarat.</li>
                       <li> Aplikasi akan secara otomatis menerjemahkan ucapan Anda ke dalam bahasa
                         isyarat.</li>
-                      <li>Gunakan Live Gesture untuk membuat siswa lebih memahami ucapan anda lewat gesture gerak bibir dan tangan</li>
+                      <li>Gunakan Live Gesture untuk membuat siswa lebih memahami ucapan anda lewat gesture gerak bibir
+                        dan tangan</li>
                     </ol>
                     {% if data.accept == 1%}
                     <div class="modal-footer">
-                      <a href="/speech-live/{{data.speech_id}}" type="button" class="btn btn-primary">
+                      <a href="/speech-live/{{ encrypt_id(data.speech_id) }}" type="button" class="btn btn-primary">
                         Mulai Speech
                       </a>
                     </div>

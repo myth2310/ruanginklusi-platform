@@ -18,8 +18,8 @@
             </div>
           </div>
           <div class="col-4 text-end">
-            <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-              <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+            <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">              <i class="fa-solid fa-user text-lg opacity-10" style="color: #ffffff;"></i>
+              
             </div>
           </div>
         </div>
@@ -40,7 +40,7 @@
           </div>
           <div class="col-4 text-end">
             <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
-              <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
+              <i class="fa-solid fa-users text-lg opacity-10" style="color: #ffffff;"></i>
             </div>
           </div>
         </div>
@@ -61,7 +61,7 @@
           </div>
           <div class="col-4 text-end">
             <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
-              <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
+              <i class="fa-solid fa-newspaper  text-lg opacity-10" style="color: #ffffff;"></i>
             </div>
           </div>
         </div>
@@ -75,7 +75,7 @@
 <div class="row mt-4">
   {% if 'islogin' in session %}
   {% if session['level'] == 'Admin' %}
-  <div class="col-lg-7 mb-lg-0 mb-4">
+  <div class="col-lg mb-lg-0 mb-4">
     <div class="card z-index-2 h-100">
       <div class="card-body p-3">
         <div>
@@ -91,7 +91,7 @@
         <div class="row p-2">
           <div class="col-lg py-4">
             <p style="font-size: 24px;">Halo, <span style="font-weight: 800;">{{ session['username'] }}</span>
-            <p style="text-align: justify; font-size: 14px;">Selamat datang di RuangInklusi! Platform komunikasi khusus untuk siswa tuna rungu dan tuna wicara. Manfaatkan teknologi Speech-to-Text dan Speech-to-Sign Language untuk pengalaman pembelajaran yang inklusif. Jelajahi dashboard pengguna untuk memulai perjalanan pembelajaran yang mendalam.</p>
+            <p style="text-align: justify; font-size: 14px;">Selamat datang di RuangInklusi! Platform komunikasi khusus untuk siswa tuna rungu dan tuna wicara. Manfaatkan teknologi Speech-to-Text dan Speech-to-Sign Language untuk pengalaman pembelajaran yang inklusif.</p>
           </div>
           <div class="col-lg">
             <img src="{{ url_for('static', filename='img/Teaching-rafiki.svg') }}" style="width: 400px; height: 300px;" class="card-img-top img-fluid"

@@ -2,13 +2,17 @@
 
 {% block content %}
 
-<div class="container-fluid">
+<div class="container-fluid" oncontextmenu="return false;">
   <div class="row">
     <div class="col-md-7">
       <div class="card mb-4">
         <div class="card-body px-0 pt-0" style="height: 450px;">
+          {% if data.type_camera == 'Internal Camera' %}
           <img src="{{ url_for('video_feed') }}" width="100%" height="450px"
             style="border-radius: 15px; object-fit: cover;">
+          {% else %}
+          <img id="ipCameraStream" width="100%" height="450px" style="border-radius: 15px; object-fit: cover;">
+          {% endif %}
         </div>
       </div>
     </div>
@@ -27,7 +31,7 @@
           </div>
         </div>
         <div class="card-body px-4 pt-0" id="scroll" style="height: 350px; overflow: auto; ">
-            <p style="font-size: 25px; font-weight: 900;" id="result"></p>
+          <p style="font-size: 25px; font-weight: 900;" id="result"></p>
         </div>
       </div>
       <a id="acceptButton" class="btn btn-lg btn-primary">Keluar</a>
@@ -38,13 +42,13 @@
 <script>
   function showSweetAlert() {
     Swal.fire({
-      title: "Are you sure?",
-      text: "Akan keluar dari ruang speech ini!",
+
+      text: "Akan keluar dari ruang speech ini ?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes"
+      confirmButtonText: "Keluar"
     }).then((result) => {
       if (result.isConfirmed) {
         window.location.href = '/dashboard';
@@ -119,8 +123,17 @@
     var objDiv = document.getElementById("scroll");
     objDiv.scrollTop = objDiv.scrollHeight;
   }
-
   setInterval(pageScroll, 100);
 </script>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var ipCameraUrl = "http://{{data.ip_camera}}:8080/video?timestamp=";
+
+
+    var img = document.getElementById("ipCameraStream");
+    img.src = ipCameraUrl + new Date().getTime();
+
+  });
+</script>
 {% endblock %}

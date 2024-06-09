@@ -12,6 +12,9 @@ import time
 import sys
 from data import data 
 from dotenv import load_dotenv
+from cryptography.fernet import Fernet
+import base64
+
 load_dotenv()
 
 
@@ -30,6 +33,24 @@ mysql = MySQL(app)
 app.config['UPLOAD_FOLDER'] = 'static/images/artikel'
 app.config['UPLOAD_PROFIL'] = 'static/images/profil'
 
+key = base64.urlsafe_b64encode(os.urandom(32))
+cipher_suite = Fernet(key)
+
+def encrypt_id(id):
+    id_str = str(id).encode('utf-8')
+    encrypted_id = cipher_suite.encrypt(id_str)
+    return encrypted_id.decode('utf-8')
+
+def decrypt_id(encrypted_id):
+    encrypted_id = encrypted_id.encode('utf-8')
+    decrypted_id = cipher_suite.decrypt(encrypted_id)
+    return int(decrypted_id.decode('utf-8'))
+
+@app.context_processor
+def utility_processor():
+    return dict(encrypt_id=encrypt_id)
+
+    
 #Landing Page
 @app.route('/')
 def index():
@@ -38,9 +59,10 @@ def index():
     data = cur.fetchall()
     return render_template('landing-page/index.html',data=data)
 
-@app.route('/speech')
-def speech():
-    return render_template('index.html')
+
+@app.route('/about')
+def about():
+    return render_template('landing-page/about.html')
 
 @app.route('/<string:slug>')
 def articles(slug):
@@ -228,17 +250,23 @@ def edit_speech(speech_id):
         cur.close()
         return redirect(url_for('detailSpeech'))
   
-@app.route('/speech-live/<int:speech_id>')
-def speechLive(speech_id):
+@app.route('/speech-live/<encrypted_speech_id>')
+def speechLive(encrypted_speech_id):
     if 'islogin' in session:
+        try:
+            speech_id = decrypt_id(encrypted_speech_id)
+        except Exception as e:
+            return "Invalid ID", 400
+
         page = 'Speech to Text Live'
         with mysql.connection.cursor() as cur:
             cur.execute("SELECT * FROM speech WHERE speech_id = %s", (speech_id,))
             data = cur.fetchone()
-            session['ip_camera'] = data['ip_camera']
-        return render_template('dashboard/live-speech.html',page=page,data=data)
+        
+        return render_template('dashboard/live-speech.html', page=page, data=data)
     else:
         return redirect(url_for('signIn'))
+
 
 background_blur_strength = 15
 def generate_frames(cap):
@@ -533,7 +561,7 @@ def liveSpeechSignLanguage():
     else:
         return redirect(url_for('signIn'))
 
-# Sample get_video_list function
+
 def get_vidio(input_text):
     videoList = []
     for category, videos in data.items():
@@ -571,6 +599,11 @@ def liveTextSignLanguage():
         return render_template('dashboard/text-to-language.html',page=page)
     else:
         return redirect(url_for('signIn'))
+    
+@app.route('/coba')
+def coba():
+    return render_template('coba.html')
+
     
 @app.route('/edit-profil/<int:user_id>', methods=['GET', 'POST'])
 def edit_profil(user_id):
